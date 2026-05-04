@@ -21,6 +21,7 @@ import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as CreditNotesRouteImport } from './routes/credit-notes'
 import { Route as BankRecRouteImport } from './routes/bank-rec'
 import { Route as AuditRouteImport } from './routes/audit'
+import { Route as ApprovalsRouteImport } from './routes/approvals'
 import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -84,6 +85,11 @@ const AuditRoute = AuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApprovalsRoute = ApprovalsRouteImport.update({
+  id: '/approvals',
+  path: '/approvals',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountsRoute = AccountsRouteImport.update({
   id: '/accounts',
   path: '/accounts',
@@ -98,6 +104,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/approvals': typeof ApprovalsRoute
   '/audit': typeof AuditRoute
   '/bank-rec': typeof BankRecRoute
   '/credit-notes': typeof CreditNotesRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/approvals': typeof ApprovalsRoute
   '/audit': typeof AuditRoute
   '/bank-rec': typeof BankRecRoute
   '/credit-notes': typeof CreditNotesRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
+  '/approvals': typeof ApprovalsRoute
   '/audit': typeof AuditRoute
   '/bank-rec': typeof BankRecRoute
   '/credit-notes': typeof CreditNotesRoute
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/accounts'
+    | '/approvals'
     | '/audit'
     | '/bank-rec'
     | '/credit-notes'
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/accounts'
+    | '/approvals'
     | '/audit'
     | '/bank-rec'
     | '/credit-notes'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/accounts'
+    | '/approvals'
     | '/audit'
     | '/bank-rec'
     | '/credit-notes'
@@ -198,6 +210,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountsRoute: typeof AccountsRoute
+  ApprovalsRoute: typeof ApprovalsRoute
   AuditRoute: typeof AuditRoute
   BankRecRoute: typeof BankRecRoute
   CreditNotesRoute: typeof CreditNotesRoute
@@ -298,6 +311,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/approvals': {
+      id: '/approvals'
+      path: '/approvals'
+      fullPath: '/approvals'
+      preLoaderRoute: typeof ApprovalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/accounts': {
       id: '/accounts'
       path: '/accounts'
@@ -318,6 +338,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountsRoute: AccountsRoute,
+  ApprovalsRoute: ApprovalsRoute,
   AuditRoute: AuditRoute,
   BankRecRoute: BankRecRoute,
   CreditNotesRoute: CreditNotesRoute,

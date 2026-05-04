@@ -22,7 +22,13 @@ const ops = [
   { to: "/customers", label: "Customers", icon: Users },
   { to: "/suppliers", label: "Suppliers", icon: Truck },
 ];
+const finance = [
+  { to: "/accounts", label: "Chart of Accounts", icon: BookOpen },
+  { to: "/ledger", label: "General Ledger", icon: BookText },
+  { to: "/bank-rec", label: "Bank Reconciliation", icon: Landmark },
+];
 const admin = [
+  { to: "/approvals", label: "Approvals", icon: CheckSquare },
   { to: "/reports", label: "Reports", icon: BarChart3 },
   { to: "/users", label: "User Management", icon: UserCog },
   { to: "/audit", label: "Audit Trail", icon: ShieldCheck },

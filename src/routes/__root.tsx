@@ -1,4 +1,5 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 import appCss from "../styles.css?url";
 
@@ -29,14 +30,13 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Travotech ERP — Medical & Lab Equipment Suppliers, Nairobi" },
+      { name: "description", content: "Enterprise medical ERP for Travotech Agencies Limited — sales, inventory, invoicing, and procurement for medical and laboratory suppliers in Kenya." },
+      { name: "author", content: "Vintech Systems and Consulting" },
+      { property: "og:title", content: "Travotech Medical ERP" },
+      { property: "og:description", content: "Sales, inventory, and finance for Kenya's medical equipment suppliers." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
@@ -65,5 +65,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <AppLayout>
+      <Outlet />
+    </AppLayout>
+  );
 }

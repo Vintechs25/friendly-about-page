@@ -78,6 +78,7 @@ export function AppSidebar() {
       <SidebarContent>
         {renderGroup("Sales", main)}
         {renderGroup("Operations", ops)}
+        {renderGroup("Finance", finance)}
         {renderGroup("Administration", admin)}
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border">

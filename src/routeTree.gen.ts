@@ -14,11 +14,15 @@ import { Route as SuppliersRouteImport } from './routes/suppliers'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as QuotationsRouteImport } from './routes/quotations'
 import { Route as PosRouteImport } from './routes/pos'
+import { Route as LedgerRouteImport } from './routes/ledger'
 import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as CreditNotesRouteImport } from './routes/credit-notes'
+import { Route as BankRecRouteImport } from './routes/bank-rec'
 import { Route as AuditRouteImport } from './routes/audit'
+import { Route as ApprovalsRouteImport } from './routes/approvals'
+import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as IndexRouteImport } from './routes/index'
 
 const UsersRoute = UsersRouteImport.update({
@@ -46,6 +50,11 @@ const PosRoute = PosRouteImport.update({
   path: '/pos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LedgerRoute = LedgerRouteImport.update({
+  id: '/ledger',
+  path: '/ledger',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InvoicesRoute = InvoicesRouteImport.update({
   id: '/invoices',
   path: '/invoices',
@@ -66,9 +75,24 @@ const CreditNotesRoute = CreditNotesRouteImport.update({
   path: '/credit-notes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BankRecRoute = BankRecRouteImport.update({
+  id: '/bank-rec',
+  path: '/bank-rec',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuditRoute = AuditRouteImport.update({
   id: '/audit',
   path: '/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApprovalsRoute = ApprovalsRouteImport.update({
+  id: '/approvals',
+  path: '/approvals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountsRoute = AccountsRouteImport.update({
+  id: '/accounts',
+  path: '/accounts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -79,11 +103,15 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
+  '/approvals': typeof ApprovalsRoute
   '/audit': typeof AuditRoute
+  '/bank-rec': typeof BankRecRoute
   '/credit-notes': typeof CreditNotesRoute
   '/customers': typeof CustomersRoute
   '/inventory': typeof InventoryRoute
   '/invoices': typeof InvoicesRoute
+  '/ledger': typeof LedgerRoute
   '/pos': typeof PosRoute
   '/quotations': typeof QuotationsRoute
   '/reports': typeof ReportsRoute
@@ -92,11 +120,15 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
+  '/approvals': typeof ApprovalsRoute
   '/audit': typeof AuditRoute
+  '/bank-rec': typeof BankRecRoute
   '/credit-notes': typeof CreditNotesRoute
   '/customers': typeof CustomersRoute
   '/inventory': typeof InventoryRoute
   '/invoices': typeof InvoicesRoute
+  '/ledger': typeof LedgerRoute
   '/pos': typeof PosRoute
   '/quotations': typeof QuotationsRoute
   '/reports': typeof ReportsRoute
@@ -106,11 +138,15 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
+  '/approvals': typeof ApprovalsRoute
   '/audit': typeof AuditRoute
+  '/bank-rec': typeof BankRecRoute
   '/credit-notes': typeof CreditNotesRoute
   '/customers': typeof CustomersRoute
   '/inventory': typeof InventoryRoute
   '/invoices': typeof InvoicesRoute
+  '/ledger': typeof LedgerRoute
   '/pos': typeof PosRoute
   '/quotations': typeof QuotationsRoute
   '/reports': typeof ReportsRoute
@@ -121,11 +157,15 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/accounts'
+    | '/approvals'
     | '/audit'
+    | '/bank-rec'
     | '/credit-notes'
     | '/customers'
     | '/inventory'
     | '/invoices'
+    | '/ledger'
     | '/pos'
     | '/quotations'
     | '/reports'
@@ -134,11 +174,15 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/accounts'
+    | '/approvals'
     | '/audit'
+    | '/bank-rec'
     | '/credit-notes'
     | '/customers'
     | '/inventory'
     | '/invoices'
+    | '/ledger'
     | '/pos'
     | '/quotations'
     | '/reports'
@@ -147,11 +191,15 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/accounts'
+    | '/approvals'
     | '/audit'
+    | '/bank-rec'
     | '/credit-notes'
     | '/customers'
     | '/inventory'
     | '/invoices'
+    | '/ledger'
     | '/pos'
     | '/quotations'
     | '/reports'
@@ -161,11 +209,15 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountsRoute: typeof AccountsRoute
+  ApprovalsRoute: typeof ApprovalsRoute
   AuditRoute: typeof AuditRoute
+  BankRecRoute: typeof BankRecRoute
   CreditNotesRoute: typeof CreditNotesRoute
   CustomersRoute: typeof CustomersRoute
   InventoryRoute: typeof InventoryRoute
   InvoicesRoute: typeof InvoicesRoute
+  LedgerRoute: typeof LedgerRoute
   PosRoute: typeof PosRoute
   QuotationsRoute: typeof QuotationsRoute
   ReportsRoute: typeof ReportsRoute
@@ -210,6 +262,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ledger': {
+      id: '/ledger'
+      path: '/ledger'
+      fullPath: '/ledger'
+      preLoaderRoute: typeof LedgerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/invoices': {
       id: '/invoices'
       path: '/invoices'
@@ -238,11 +297,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreditNotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bank-rec': {
+      id: '/bank-rec'
+      path: '/bank-rec'
+      fullPath: '/bank-rec'
+      preLoaderRoute: typeof BankRecRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/audit': {
       id: '/audit'
       path: '/audit'
       fullPath: '/audit'
       preLoaderRoute: typeof AuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/approvals': {
+      id: '/approvals'
+      path: '/approvals'
+      fullPath: '/approvals'
+      preLoaderRoute: typeof ApprovalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accounts': {
+      id: '/accounts'
+      path: '/accounts'
+      fullPath: '/accounts'
+      preLoaderRoute: typeof AccountsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -257,11 +337,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountsRoute: AccountsRoute,
+  ApprovalsRoute: ApprovalsRoute,
   AuditRoute: AuditRoute,
+  BankRecRoute: BankRecRoute,
   CreditNotesRoute: CreditNotesRoute,
   CustomersRoute: CustomersRoute,
   InventoryRoute: InventoryRoute,
   InvoicesRoute: InvoicesRoute,
+  LedgerRoute: LedgerRoute,
   PosRoute: PosRoute,
   QuotationsRoute: QuotationsRoute,
   ReportsRoute: ReportsRoute,
@@ -271,3 +355,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

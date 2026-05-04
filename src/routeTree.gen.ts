@@ -14,6 +14,7 @@ import { Route as SuppliersRouteImport } from './routes/suppliers'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as QuotationsRouteImport } from './routes/quotations'
 import { Route as PosRouteImport } from './routes/pos'
+import { Route as LedgerRouteImport } from './routes/ledger'
 import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as CustomersRouteImport } from './routes/customers'
@@ -45,6 +46,11 @@ const QuotationsRoute = QuotationsRouteImport.update({
 const PosRoute = PosRouteImport.update({
   id: '/pos',
   path: '/pos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LedgerRoute = LedgerRouteImport.update({
+  id: '/ledger',
+  path: '/ledger',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InvoicesRoute = InvoicesRouteImport.update({
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/customers': typeof CustomersRoute
   '/inventory': typeof InventoryRoute
   '/invoices': typeof InvoicesRoute
+  '/ledger': typeof LedgerRoute
   '/pos': typeof PosRoute
   '/quotations': typeof QuotationsRoute
   '/reports': typeof ReportsRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/customers': typeof CustomersRoute
   '/inventory': typeof InventoryRoute
   '/invoices': typeof InvoicesRoute
+  '/ledger': typeof LedgerRoute
   '/pos': typeof PosRoute
   '/quotations': typeof QuotationsRoute
   '/reports': typeof ReportsRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/customers': typeof CustomersRoute
   '/inventory': typeof InventoryRoute
   '/invoices': typeof InvoicesRoute
+  '/ledger': typeof LedgerRoute
   '/pos': typeof PosRoute
   '/quotations': typeof QuotationsRoute
   '/reports': typeof ReportsRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/inventory'
     | '/invoices'
+    | '/ledger'
     | '/pos'
     | '/quotations'
     | '/reports'
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/inventory'
     | '/invoices'
+    | '/ledger'
     | '/pos'
     | '/quotations'
     | '/reports'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/inventory'
     | '/invoices'
+    | '/ledger'
     | '/pos'
     | '/quotations'
     | '/reports'
@@ -179,6 +191,7 @@ export interface RootRouteChildren {
   CustomersRoute: typeof CustomersRoute
   InventoryRoute: typeof InventoryRoute
   InvoicesRoute: typeof InvoicesRoute
+  LedgerRoute: typeof LedgerRoute
   PosRoute: typeof PosRoute
   QuotationsRoute: typeof QuotationsRoute
   ReportsRoute: typeof ReportsRoute
@@ -221,6 +234,13 @@ declare module '@tanstack/react-router' {
       path: '/pos'
       fullPath: '/pos'
       preLoaderRoute: typeof PosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ledger': {
+      id: '/ledger'
+      path: '/ledger'
+      fullPath: '/ledger'
+      preLoaderRoute: typeof LedgerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/invoices': {
@@ -283,6 +303,7 @@ const rootRouteChildren: RootRouteChildren = {
   CustomersRoute: CustomersRoute,
   InventoryRoute: InventoryRoute,
   InvoicesRoute: InvoicesRoute,
+  LedgerRoute: LedgerRoute,
   PosRoute: PosRoute,
   QuotationsRoute: QuotationsRoute,
   ReportsRoute: ReportsRoute,

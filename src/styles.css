@@ -61,6 +61,19 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme inline {
+  --color-navy: var(--navy);
+  --color-navy-foreground: var(--navy-foreground);
+  --color-light-blue: var(--light-blue);
+  --color-light-blue-foreground: var(--light-blue-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+}
+
 :root {
   --radius: 0.5rem;
   /* Travotech Medical ERP — Navy / Royal / Light blue / White */

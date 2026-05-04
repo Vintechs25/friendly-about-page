@@ -65,7 +65,6 @@
   --radius: 0.5rem;
   /* Travotech Medical ERP — Navy / Royal / Light blue / White */
   --background: oklch(0.985 0.005 240);
-  --foreground: oklch(0.２ 0.04 250);
   --foreground: oklch(0.20 0.04 250);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.20 0.04 250);

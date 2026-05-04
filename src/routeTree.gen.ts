@@ -9,12 +9,30 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as QuotationsRouteImport } from './routes/quotations'
 import { Route as PosRouteImport } from './routes/pos'
+import { Route as InvoicesRouteImport } from './routes/invoices'
+import { Route as CreditNotesRouteImport } from './routes/credit-notes'
 import { Route as IndexRouteImport } from './routes/index'
 
+const QuotationsRoute = QuotationsRouteImport.update({
+  id: '/quotations',
+  path: '/quotations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PosRoute = PosRouteImport.update({
   id: '/pos',
   path: '/pos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvoicesRoute = InvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreditNotesRoute = CreditNotesRouteImport.update({
+  id: '/credit-notes',
+  path: '/credit-notes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,37 +43,70 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/credit-notes': typeof CreditNotesRoute
+  '/invoices': typeof InvoicesRoute
   '/pos': typeof PosRoute
+  '/quotations': typeof QuotationsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/credit-notes': typeof CreditNotesRoute
+  '/invoices': typeof InvoicesRoute
   '/pos': typeof PosRoute
+  '/quotations': typeof QuotationsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/credit-notes': typeof CreditNotesRoute
+  '/invoices': typeof InvoicesRoute
   '/pos': typeof PosRoute
+  '/quotations': typeof QuotationsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/pos'
+  fullPaths: '/' | '/credit-notes' | '/invoices' | '/pos' | '/quotations'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pos'
-  id: '__root__' | '/' | '/pos'
+  to: '/' | '/credit-notes' | '/invoices' | '/pos' | '/quotations'
+  id: '__root__' | '/' | '/credit-notes' | '/invoices' | '/pos' | '/quotations'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CreditNotesRoute: typeof CreditNotesRoute
+  InvoicesRoute: typeof InvoicesRoute
   PosRoute: typeof PosRoute
+  QuotationsRoute: typeof QuotationsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/quotations': {
+      id: '/quotations'
+      path: '/quotations'
+      fullPath: '/quotations'
+      preLoaderRoute: typeof QuotationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pos': {
       id: '/pos'
       path: '/pos'
       fullPath: '/pos'
       preLoaderRoute: typeof PosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invoices': {
+      id: '/invoices'
+      path: '/invoices'
+      fullPath: '/invoices'
+      preLoaderRoute: typeof InvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/credit-notes': {
+      id: '/credit-notes'
+      path: '/credit-notes'
+      fullPath: '/credit-notes'
+      preLoaderRoute: typeof CreditNotesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,7 +121,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CreditNotesRoute: CreditNotesRoute,
+  InvoicesRoute: InvoicesRoute,
   PosRoute: PosRoute,
+  QuotationsRoute: QuotationsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -19,6 +19,7 @@ import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as CreditNotesRouteImport } from './routes/credit-notes'
+import { Route as BankRecRouteImport } from './routes/bank-rec'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as IndexRouteImport } from './routes/index'
@@ -73,6 +74,11 @@ const CreditNotesRoute = CreditNotesRouteImport.update({
   path: '/credit-notes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BankRecRoute = BankRecRouteImport.update({
+  id: '/bank-rec',
+  path: '/bank-rec',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuditRoute = AuditRouteImport.update({
   id: '/audit',
   path: '/audit',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/audit': typeof AuditRoute
+  '/bank-rec': typeof BankRecRoute
   '/credit-notes': typeof CreditNotesRoute
   '/customers': typeof CustomersRoute
   '/inventory': typeof InventoryRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/audit': typeof AuditRoute
+  '/bank-rec': typeof BankRecRoute
   '/credit-notes': typeof CreditNotesRoute
   '/customers': typeof CustomersRoute
   '/inventory': typeof InventoryRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/audit': typeof AuditRoute
+  '/bank-rec': typeof BankRecRoute
   '/credit-notes': typeof CreditNotesRoute
   '/customers': typeof CustomersRoute
   '/inventory': typeof InventoryRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accounts'
     | '/audit'
+    | '/bank-rec'
     | '/credit-notes'
     | '/customers'
     | '/inventory'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accounts'
     | '/audit'
+    | '/bank-rec'
     | '/credit-notes'
     | '/customers'
     | '/inventory'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accounts'
     | '/audit'
+    | '/bank-rec'
     | '/credit-notes'
     | '/customers'
     | '/inventory'
@@ -187,6 +199,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountsRoute: typeof AccountsRoute
   AuditRoute: typeof AuditRoute
+  BankRecRoute: typeof BankRecRoute
   CreditNotesRoute: typeof CreditNotesRoute
   CustomersRoute: typeof CustomersRoute
   InventoryRoute: typeof InventoryRoute
@@ -271,6 +284,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreditNotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bank-rec': {
+      id: '/bank-rec'
+      path: '/bank-rec'
+      fullPath: '/bank-rec'
+      preLoaderRoute: typeof BankRecRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/audit': {
       id: '/audit'
       path: '/audit'
@@ -299,6 +319,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountsRoute: AccountsRoute,
   AuditRoute: AuditRoute,
+  BankRecRoute: BankRecRoute,
   CreditNotesRoute: CreditNotesRoute,
   CustomersRoute: CustomersRoute,
   InventoryRoute: InventoryRoute,

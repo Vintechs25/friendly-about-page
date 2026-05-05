@@ -74,7 +74,8 @@ function Invoices() {
 
   return (
     <div>
-      <PageHeader title="Invoices" description="Track billing, payments and outstanding balances." />
+      <PageHeader title="Invoices" description="Track billing, payments and outstanding balances."
+        actions={<BulkIO entity="invoices" rows={invoices as unknown as Record<string, unknown>[]} />} />
       <DataTable columns={cols} rows={invoices} empty="No invoices yet" />
 
       <Dialog open={!!view && !payOpen} onOpenChange={(o) => !o && setView(null)}>
@@ -127,8 +128,8 @@ function Invoices() {
                   ))}
                 </div>
               )}
-              <DialogFooter>
-                <Button variant="outline" onClick={() => window.print()}><Printer className="h-4 w-4 mr-1" /> Print</Button>
+              <DialogFooter className="flex-wrap gap-2">
+                {view && <DocActions title={view.id} html={invHTML(view)} emailTo={view.customerName} />}
                 {view.status !== "Paid" && (
                   <Button onClick={() => { setAmount(view.total - view.paid); setPayOpen(true); }}>Record Payment</Button>
                 )}

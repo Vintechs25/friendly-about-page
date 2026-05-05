@@ -151,7 +151,8 @@ function Quotations() {
                 <Button onClick={submit}>Create</Button>
               </DialogFooter>
             </DialogContent>
-          </Dialog>
+            </Dialog>
+          </div>
         }
       />
       <DataTable columns={cols} rows={quotations} empty="No quotations yet" />

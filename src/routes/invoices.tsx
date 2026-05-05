@@ -162,6 +162,23 @@ function Invoices() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!edit} onOpenChange={(o) => !o && setEdit(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Edit {edit?.id}</DialogTitle></DialogHeader>
+          {edit && (
+            <div className="space-y-3">
+              <div><Label>Customer Name</Label><Input value={edit.customerName} onChange={(e) => setEdit({ ...edit, customerName: e.target.value })} /></div>
+              <div><Label>Total (KES)</Label><Input type="number" value={edit.total} onChange={(e) => setEdit({ ...edit, total: Number(e.target.value) || 0 })} /></div>
+              <div><Label>Due Date</Label><Input type="date" value={edit.dueDate.slice(0, 10)} onChange={(e) => setEdit({ ...edit, dueDate: new Date(e.target.value).toISOString() })} /></div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEdit(null)}>Cancel</Button>
+            <Button onClick={() => { if (edit) { updateInvoice(edit.id, edit); setEdit(null); toast.success("Invoice updated"); } }}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

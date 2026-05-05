@@ -55,6 +55,20 @@ interface State {
   // users
   addUser: (u: Omit<User, "id">) => User;
   toggleUserActive: (id: string) => void;
+  // generic edits / deletes (demo)
+  updateCustomer: (id: string, patch: Partial<Customer>) => void;
+  deleteCustomer: (id: string) => void;
+  updateSupplier: (id: string, patch: Partial<Supplier>) => void;
+  deleteSupplier: (id: string) => void;
+  updateProduct: (id: string, patch: Partial<Product>) => void;
+  deleteProduct: (id: string) => void;
+  updateInvoice: (id: string, patch: Partial<Invoice>) => void;
+  deleteInvoice: (id: string) => void;
+  updateQuotation: (id: string, patch: Partial<Quotation>) => void;
+  deleteQuotation: (id: string) => void;
+  bulkImportCustomers: (rows: Partial<Customer>[]) => number;
+  bulkImportProducts: (rows: Partial<Product>[]) => number;
+  bulkImportSuppliers: (rows: Partial<Supplier>[]) => number;
 }
 
 const APPROVE_ROLES: Role[] = ["Super Admin", "Branch Manager", "Accountant"];
@@ -272,4 +286,74 @@ export const useStore = create<State>((set, get) => ({
   },
   toggleUserActive: (id) =>
     set((s) => ({ users: s.users.map((u) => u.id === id ? { ...u, active: !u.active } : u) })),
+
+  updateCustomer: (id, patch) => set((s) => ({ customers: s.customers.map((x) => x.id === id ? { ...x, ...patch } : x) })),
+  deleteCustomer: (id) => set((s) => ({ customers: s.customers.filter((x) => x.id !== id) })),
+  updateSupplier: (id, patch) => set((s) => ({ suppliers: s.suppliers.map((x) => x.id === id ? { ...x, ...patch } : x) })),
+  deleteSupplier: (id) => set((s) => ({ suppliers: s.suppliers.filter((x) => x.id !== id) })),
+  updateProduct: (id, patch) => set((s) => ({ products: s.products.map((x) => x.id === id ? { ...x, ...patch } : x) })),
+  deleteProduct: (id) => set((s) => ({ products: s.products.filter((x) => x.id !== id) })),
+  updateInvoice: (id, patch) => set((s) => ({ invoices: s.invoices.map((x) => x.id === id ? { ...x, ...patch } : x) })),
+  deleteInvoice: (id) => set((s) => ({ invoices: s.invoices.filter((x) => x.id !== id) })),
+  updateQuotation: (id, patch) => set((s) => ({ quotations: s.quotations.map((x) => x.id === id ? { ...x, ...patch } : x) })),
+  deleteQuotation: (id) => set((s) => ({ quotations: s.quotations.filter((x) => x.id !== id) })),
+
+  bulkImportCustomers: (rows) => {
+    const s = get();
+    let i = s.customers.length;
+    const added: Customer[] = rows.map((r) => ({
+      id: padId("CUST", ++i),
+      name: r.name || "Imported Customer",
+      type: (r.type as Customer["type"]) || "Walk-in",
+      phone: r.phone || "",
+      email: r.email || "",
+      address: r.address || "",
+      contactPerson: r.contactPerson || "",
+      kraPin: r.kraPin,
+      notes: r.notes,
+      creditLimit: Number(r.creditLimit) || 0,
+      outstandingBalance: Number(r.outstandingBalance) || 0,
+      creditStatus: (r.creditStatus as Customer["creditStatus"]) || "None",
+      createdAt: new Date().toISOString(),
+    }));
+    set({ customers: [...added, ...s.customers] });
+    s.addAudit({ user: s.currentUser.name, action: "Bulk imported customers", entity: "customers", details: `${added.length} rows` });
+    return added.length;
+  },
+  bulkImportProducts: (rows) => {
+    const s = get();
+    let i = s.products.length;
+    const added: Product[] = rows.map((r) => ({
+      id: `P-${String(++i).padStart(3, "0")}`,
+      sku: r.sku || `SKU-${i}`,
+      name: r.name || "Imported Product",
+      category: (r.category as Product["category"]) || "Medical Instruments",
+      price: Number(r.price) || 0,
+      cost: Number(r.cost) || 0,
+      stock: Number(r.stock) || 0,
+      reorderLevel: Number(r.reorderLevel) || 5,
+      unit: r.unit || "pc",
+      batches: [],
+    }));
+    set({ products: [...added, ...s.products] });
+    s.addAudit({ user: s.currentUser.name, action: "Bulk imported products", entity: "products", details: `${added.length} rows` });
+    return added.length;
+  },
+  bulkImportSuppliers: (rows) => {
+    const s = get();
+    let i = s.suppliers.length;
+    const added: Supplier[] = rows.map((r) => ({
+      id: padId("SUP", ++i),
+      name: r.name || "Imported Supplier",
+      contactPerson: r.contactPerson || "",
+      phone: r.phone || "",
+      email: r.email || "",
+      address: r.address || "",
+      kraPin: r.kraPin || "",
+      createdAt: new Date().toISOString(),
+    }));
+    set({ suppliers: [...added, ...s.suppliers] });
+    s.addAudit({ user: s.currentUser.name, action: "Bulk imported suppliers", entity: "suppliers", details: `${added.length} rows` });
+    return added.length;
+  },
 }));

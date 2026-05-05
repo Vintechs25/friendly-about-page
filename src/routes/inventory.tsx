@@ -10,9 +10,10 @@ import { DataTable, type Column } from "@/components/DataTable";
 import { useStore } from "@/lib/store";
 import { formatKES, formatDate, daysUntil } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
-import { Plus, AlertTriangle, Clock } from "lucide-react";
+import { Plus, AlertTriangle, Clock, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Product, ProductCategory } from "@/lib/types";
+import { BulkIO } from "@/components/BulkIO";
 
 const CATEGORIES: ProductCategory[] = ["Medical Instruments", "Lab Equipment", "Reagents", "Surgical Consumables", "Rapid Diagnostic Kits"];
 
@@ -22,8 +23,9 @@ export const Route = createFileRoute("/inventory")({
 });
 
 function Inventory() {
-  const { products, addProduct } = useStore();
+  const { products, addProduct, updateProduct, deleteProduct, bulkImportProducts } = useStore();
   const [open, setOpen] = useState(false);
+  const [edit, setEdit] = useState<Product | null>(null);
   const [filter, setFilter] = useState<string>("all");
   const [q, setQ] = useState("");
   const [form, setForm] = useState({

@@ -11,11 +11,12 @@ import { DataTable, type Column } from "@/components/DataTable";
 import { useStore, canApprove } from "@/lib/store";
 import { formatKES, formatDate } from "@/lib/format";
 import { StatusBadge } from "@/components/StatusBadge";
-import { Plus, Eye, Check, X } from "lucide-react";
+import { Plus, Eye, Check, X, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Customer, CustomerType } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { BulkIO } from "@/components/BulkIO";
 
 const TYPES: CustomerType[] = ["Hospital", "Lab", "University", "Walk-in"];
 
@@ -25,9 +26,10 @@ export const Route = createFileRoute("/customers")({
 });
 
 function Customers() {
-  const { customers, sales, invoices, addCustomer, setCustomerCreditStatus, currentUser } = useStore();
+  const { customers, sales, invoices, addCustomer, setCustomerCreditStatus, updateCustomer, deleteCustomer, bulkImportCustomers, currentUser } = useStore();
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<Customer | null>(null);
+  const [edit, setEdit] = useState<Customer | null>(null);
   const approver = canApprove(currentUser.role);
   const [form, setForm] = useState({
     name: "", type: "Hospital" as CustomerType, phone: "", email: "",
@@ -42,6 +44,13 @@ function Customers() {
     });
     setOpen(false);
     toast.success("Customer created");
+  };
+
+  const saveEdit = () => {
+    if (!edit) return;
+    updateCustomer(edit.id, edit);
+    setEdit(null);
+    toast.success("Customer updated");
   };
 
   const cols: Column<Customer>[] = [
@@ -62,6 +71,8 @@ function Customers() {
     { key: "act", header: "", className: "text-right", cell: (c) => (
       <div className="flex gap-1 justify-end">
         <Button size="sm" variant="outline" onClick={() => setView(c)}><Eye className="h-3 w-3" /></Button>
+        <Button size="sm" variant="outline" onClick={() => setEdit({ ...c })}><Pencil className="h-3 w-3" /></Button>
+        <Button size="sm" variant="outline" className="text-destructive" onClick={() => { if (confirm(`Delete ${c.name}?`)) { deleteCustomer(c.id); toast.success("Deleted"); } }}><Trash2 className="h-3 w-3" /></Button>
         {c.creditStatus === "Pending" && approver && (
           <>
             <Button size="sm" variant="outline" className="text-success" onClick={() => { setCustomerCreditStatus(c.id, "Approved"); toast.success("Credit approved"); }}><Check className="h-3 w-3" /></Button>

@@ -12,9 +12,12 @@ import { DataTable, type Column } from "@/components/DataTable";
 import { useStore } from "@/lib/store";
 import { formatKES, formatDate } from "@/lib/format";
 import { StatusBadge } from "@/components/StatusBadge";
-import { Eye, Printer, CreditCard } from "lucide-react";
+import { Eye, CreditCard, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Invoice, PaymentMethod } from "@/lib/types";
+import { BulkIO } from "@/components/BulkIO";
+import { DocActions } from "@/components/DocActions";
+import { formatKES as fk } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const Route = createFileRoute("/invoices")({
@@ -23,12 +26,19 @@ export const Route = createFileRoute("/invoices")({
 });
 
 function Invoices() {
-  const { invoices, recordPayment } = useStore();
+  const { invoices, recordPayment, updateInvoice, deleteInvoice } = useStore();
   const [view, setView] = useState<Invoice | null>(null);
+  const [edit, setEdit] = useState<Invoice | null>(null);
   const [payOpen, setPayOpen] = useState(false);
   const [amount, setAmount] = useState(0);
   const [method, setMethod] = useState<PaymentMethod>("M-Pesa");
   const [reference, setReference] = useState("");
+
+  const invHTML = (i: Invoice) => `<h1>Invoice ${i.id}</h1>
+    <div class="meta">${i.customerName} · Date ${formatDate(i.createdAt)} · Due ${formatDate(i.dueDate)}</div>
+    <table><thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+    <tbody>${i.items.map((it) => `<tr><td>${it.name}</td><td>${it.quantity}</td><td>${fk(it.price)}</td><td>${fk(it.price * it.quantity)}</td></tr>`).join("")}</tbody></table>
+    <div class="total">Total: ${fk(i.total)} · Paid: ${fk(i.paid)} · Balance: ${fk(i.total - i.paid)}</div>`;
 
   const cols: Column<Invoice>[] = [
     { key: "id", header: "Invoice #", cell: (i) => <span className="font-mono font-medium text-navy">{i.id}</span> },
@@ -42,6 +52,8 @@ function Invoices() {
       key: "act", header: "", className: "text-right", cell: (i) => (
         <div className="flex gap-1 justify-end">
           <Button size="sm" variant="outline" onClick={() => setView(i)}><Eye className="h-3 w-3" /></Button>
+          <Button size="sm" variant="outline" onClick={() => setEdit({ ...i })}><Pencil className="h-3 w-3" /></Button>
+          <Button size="sm" variant="outline" className="text-destructive" onClick={() => { if (confirm(`Delete ${i.id}?`)) { deleteInvoice(i.id); toast.success("Deleted"); } }}><Trash2 className="h-3 w-3" /></Button>
           {i.status !== "Paid" && (
             <Button size="sm" onClick={() => { setView(i); setAmount(i.total - i.paid); setPayOpen(true); }}>
               <CreditCard className="h-3 w-3 mr-1" /> Pay

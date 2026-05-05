@@ -154,6 +154,27 @@ function Inventory() {
         </Select>
       </div>
       <DataTable columns={cols} rows={filtered} empty="No products" />
+
+      <Dialog open={!!edit} onOpenChange={(o) => !o && setEdit(null)}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader><DialogTitle>Edit {edit?.name}</DialogTitle></DialogHeader>
+          {edit && (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2"><Label>Name</Label><Input value={edit.name} onChange={(e) => setEdit({ ...edit, name: e.target.value })} /></div>
+              <div><Label>SKU</Label><Input value={edit.sku} onChange={(e) => setEdit({ ...edit, sku: e.target.value })} /></div>
+              <div><Label>Unit</Label><Input value={edit.unit} onChange={(e) => setEdit({ ...edit, unit: e.target.value })} /></div>
+              <div><Label>Price</Label><Input type="number" value={edit.price} onChange={(e) => setEdit({ ...edit, price: Number(e.target.value) || 0 })} /></div>
+              <div><Label>Cost</Label><Input type="number" value={edit.cost} onChange={(e) => setEdit({ ...edit, cost: Number(e.target.value) || 0 })} /></div>
+              <div><Label>Stock</Label><Input type="number" value={edit.stock} onChange={(e) => setEdit({ ...edit, stock: Number(e.target.value) || 0 })} /></div>
+              <div><Label>Reorder Level</Label><Input type="number" value={edit.reorderLevel} onChange={(e) => setEdit({ ...edit, reorderLevel: Number(e.target.value) || 0 })} /></div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEdit(null)}>Cancel</Button>
+            <Button onClick={() => { if (edit) { updateProduct(edit.id, edit); setEdit(null); toast.success("Product updated"); } }}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

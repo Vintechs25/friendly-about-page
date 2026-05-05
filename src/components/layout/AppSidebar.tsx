@@ -2,7 +2,8 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, ShoppingCart, FileText, Receipt, FileMinus,
   Package, Users, Truck, BarChart3, UserCog, ShieldCheck,
-  BookOpen, BookText, Landmark, CheckSquare,
+  BookOpen, BookText, Landmark, CheckSquare, Wallet, ShoppingBag,
+  Bell, Settings as SettingsIcon,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
@@ -21,17 +22,21 @@ const ops = [
   { to: "/inventory", label: "Inventory", icon: Package },
   { to: "/customers", label: "Customers", icon: Users },
   { to: "/suppliers", label: "Suppliers", icon: Truck },
+  { to: "/procurement", label: "Procurement / LPO", icon: ShoppingBag },
 ];
 const finance = [
   { to: "/accounts", label: "Chart of Accounts", icon: BookOpen },
   { to: "/ledger", label: "General Ledger", icon: BookText },
   { to: "/bank-rec", label: "Bank Reconciliation", icon: Landmark },
+  { to: "/payroll", label: "Payroll & HR", icon: Wallet },
 ];
 const admin = [
   { to: "/approvals", label: "Approvals", icon: CheckSquare },
   { to: "/reports", label: "Reports", icon: BarChart3 },
+  { to: "/notifications", label: "Notifications", icon: Bell },
   { to: "/users", label: "User Management", icon: UserCog },
   { to: "/audit", label: "Audit Trail", icon: ShieldCheck },
+  { to: "/settings", label: "Settings", icon: SettingsIcon },
 ];
 
 export function AppSidebar() {

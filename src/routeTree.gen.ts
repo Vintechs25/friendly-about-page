@@ -11,9 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UsersRouteImport } from './routes/users'
 import { Route as SuppliersRouteImport } from './routes/suppliers'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as QuotationsRouteImport } from './routes/quotations'
+import { Route as ProcurementRouteImport } from './routes/procurement'
 import { Route as PosRouteImport } from './routes/pos'
+import { Route as PayrollRouteImport } from './routes/payroll'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as LedgerRouteImport } from './routes/ledger'
 import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as InventoryRouteImport } from './routes/inventory'
@@ -35,6 +39,11 @@ const SuppliersRoute = SuppliersRouteImport.update({
   path: '/suppliers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReportsRoute = ReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -45,9 +54,24 @@ const QuotationsRoute = QuotationsRouteImport.update({
   path: '/quotations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProcurementRoute = ProcurementRouteImport.update({
+  id: '/procurement',
+  path: '/procurement',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PosRoute = PosRouteImport.update({
   id: '/pos',
   path: '/pos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PayrollRoute = PayrollRouteImport.update({
+  id: '/payroll',
+  path: '/payroll',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LedgerRoute = LedgerRouteImport.update({
@@ -112,9 +136,13 @@ export interface FileRoutesByFullPath {
   '/inventory': typeof InventoryRoute
   '/invoices': typeof InvoicesRoute
   '/ledger': typeof LedgerRoute
+  '/notifications': typeof NotificationsRoute
+  '/payroll': typeof PayrollRoute
   '/pos': typeof PosRoute
+  '/procurement': typeof ProcurementRoute
   '/quotations': typeof QuotationsRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/suppliers': typeof SuppliersRoute
   '/users': typeof UsersRoute
 }
@@ -129,9 +157,13 @@ export interface FileRoutesByTo {
   '/inventory': typeof InventoryRoute
   '/invoices': typeof InvoicesRoute
   '/ledger': typeof LedgerRoute
+  '/notifications': typeof NotificationsRoute
+  '/payroll': typeof PayrollRoute
   '/pos': typeof PosRoute
+  '/procurement': typeof ProcurementRoute
   '/quotations': typeof QuotationsRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/suppliers': typeof SuppliersRoute
   '/users': typeof UsersRoute
 }
@@ -147,9 +179,13 @@ export interface FileRoutesById {
   '/inventory': typeof InventoryRoute
   '/invoices': typeof InvoicesRoute
   '/ledger': typeof LedgerRoute
+  '/notifications': typeof NotificationsRoute
+  '/payroll': typeof PayrollRoute
   '/pos': typeof PosRoute
+  '/procurement': typeof ProcurementRoute
   '/quotations': typeof QuotationsRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/suppliers': typeof SuppliersRoute
   '/users': typeof UsersRoute
 }
@@ -166,9 +202,13 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/invoices'
     | '/ledger'
+    | '/notifications'
+    | '/payroll'
     | '/pos'
+    | '/procurement'
     | '/quotations'
     | '/reports'
+    | '/settings'
     | '/suppliers'
     | '/users'
   fileRoutesByTo: FileRoutesByTo
@@ -183,9 +223,13 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/invoices'
     | '/ledger'
+    | '/notifications'
+    | '/payroll'
     | '/pos'
+    | '/procurement'
     | '/quotations'
     | '/reports'
+    | '/settings'
     | '/suppliers'
     | '/users'
   id:
@@ -200,9 +244,13 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/invoices'
     | '/ledger'
+    | '/notifications'
+    | '/payroll'
     | '/pos'
+    | '/procurement'
     | '/quotations'
     | '/reports'
+    | '/settings'
     | '/suppliers'
     | '/users'
   fileRoutesById: FileRoutesById
@@ -218,9 +266,13 @@ export interface RootRouteChildren {
   InventoryRoute: typeof InventoryRoute
   InvoicesRoute: typeof InvoicesRoute
   LedgerRoute: typeof LedgerRoute
+  NotificationsRoute: typeof NotificationsRoute
+  PayrollRoute: typeof PayrollRoute
   PosRoute: typeof PosRoute
+  ProcurementRoute: typeof ProcurementRoute
   QuotationsRoute: typeof QuotationsRoute
   ReportsRoute: typeof ReportsRoute
+  SettingsRoute: typeof SettingsRoute
   SuppliersRoute: typeof SuppliersRoute
   UsersRoute: typeof UsersRoute
 }
@@ -241,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuppliersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reports': {
       id: '/reports'
       path: '/reports'
@@ -255,11 +314,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuotationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/procurement': {
+      id: '/procurement'
+      path: '/procurement'
+      fullPath: '/procurement'
+      preLoaderRoute: typeof ProcurementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pos': {
       id: '/pos'
       path: '/pos'
       fullPath: '/pos'
       preLoaderRoute: typeof PosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payroll': {
+      id: '/payroll'
+      path: '/payroll'
+      fullPath: '/payroll'
+      preLoaderRoute: typeof PayrollRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ledger': {
@@ -346,21 +426,16 @@ const rootRouteChildren: RootRouteChildren = {
   InventoryRoute: InventoryRoute,
   InvoicesRoute: InvoicesRoute,
   LedgerRoute: LedgerRoute,
+  NotificationsRoute: NotificationsRoute,
+  PayrollRoute: PayrollRoute,
   PosRoute: PosRoute,
+  ProcurementRoute: ProcurementRoute,
   QuotationsRoute: QuotationsRoute,
   ReportsRoute: ReportsRoute,
+  SettingsRoute: SettingsRoute,
   SuppliersRoute: SuppliersRoute,
   UsersRoute: UsersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

@@ -11,11 +11,12 @@ import { DataTable, type Column } from "@/components/DataTable";
 import { useStore, canApprove } from "@/lib/store";
 import { formatKES, formatDate } from "@/lib/format";
 import { StatusBadge } from "@/components/StatusBadge";
-import { Plus, Eye, Check, X } from "lucide-react";
+import { Plus, Eye, Check, X, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Customer, CustomerType } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { BulkIO } from "@/components/BulkIO";
 
 const TYPES: CustomerType[] = ["Hospital", "Lab", "University", "Walk-in"];
 
@@ -25,9 +26,10 @@ export const Route = createFileRoute("/customers")({
 });
 
 function Customers() {
-  const { customers, sales, invoices, addCustomer, setCustomerCreditStatus, currentUser } = useStore();
+  const { customers, sales, invoices, addCustomer, setCustomerCreditStatus, updateCustomer, deleteCustomer, bulkImportCustomers, currentUser } = useStore();
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<Customer | null>(null);
+  const [edit, setEdit] = useState<Customer | null>(null);
   const approver = canApprove(currentUser.role);
   const [form, setForm] = useState({
     name: "", type: "Hospital" as CustomerType, phone: "", email: "",
@@ -42,6 +44,13 @@ function Customers() {
     });
     setOpen(false);
     toast.success("Customer created");
+  };
+
+  const saveEdit = () => {
+    if (!edit) return;
+    updateCustomer(edit.id, edit);
+    setEdit(null);
+    toast.success("Customer updated");
   };
 
   const cols: Column<Customer>[] = [
@@ -62,6 +71,8 @@ function Customers() {
     { key: "act", header: "", className: "text-right", cell: (c) => (
       <div className="flex gap-1 justify-end">
         <Button size="sm" variant="outline" onClick={() => setView(c)}><Eye className="h-3 w-3" /></Button>
+        <Button size="sm" variant="outline" onClick={() => setEdit({ ...c })}><Pencil className="h-3 w-3" /></Button>
+        <Button size="sm" variant="outline" className="text-destructive" onClick={() => { if (confirm(`Delete ${c.name}?`)) { deleteCustomer(c.id); toast.success("Deleted"); } }}><Trash2 className="h-3 w-3" /></Button>
         {c.creditStatus === "Pending" && approver && (
           <>
             <Button size="sm" variant="outline" className="text-success" onClick={() => { setCustomerCreditStatus(c.id, "Approved"); toast.success("Credit approved"); }}><Check className="h-3 w-3" /></Button>
@@ -83,35 +94,63 @@ function Customers() {
         title="Customers"
         description={`${customers.length} customers · ${customers.filter(c => c.creditStatus === "Pending").length} credit requests pending`}
         actions={
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" /> New Customer</Button></DialogTrigger>
-            <DialogContent className="max-w-xl">
-              <DialogHeader><DialogTitle>New Customer</DialogTitle></DialogHeader>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="col-span-2"><Label>Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
-                <div><Label>Type</Label>
-                  <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v as CustomerType })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
-                  </Select>
+          <div className="flex gap-2">
+            <BulkIO
+              entity="customers"
+              rows={customers as unknown as Record<string, unknown>[]}
+              template={{ name: "ABC Hospital", type: "Hospital", phone: "0712345678", email: "info@abc.co.ke", address: "Nairobi", contactPerson: "Jane", kraPin: "P051234567X", creditLimit: "100000" }}
+              onImport={(rows) => bulkImportCustomers(rows as Partial<Customer>[])}
+            />
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" /> New Customer</Button></DialogTrigger>
+              <DialogContent className="max-w-xl">
+                <DialogHeader><DialogTitle>New Customer</DialogTitle></DialogHeader>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="col-span-2"><Label>Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+                  <div><Label>Type</Label>
+                    <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v as CustomerType })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Phone</Label><Input value={form.phone} placeholder="07XXXXXXXX" onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
+                  <div className="col-span-2"><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+                  <div className="col-span-2"><Label>Address</Label><Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
+                  <div><Label>Contact Person</Label><Input value={form.contactPerson} onChange={(e) => setForm({ ...form, contactPerson: e.target.value })} /></div>
+                  <div><Label>KRA PIN (optional)</Label><Input value={form.kraPin} onChange={(e) => setForm({ ...form, kraPin: e.target.value })} /></div>
+                  <div className="col-span-2"><Label>Credit Limit Request (KES)</Label><Input type="number" value={form.creditLimit} onChange={(e) => setForm({ ...form, creditLimit: Number(e.target.value) || 0 })} /></div>
+                  <div className="col-span-2"><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
                 </div>
-                <div><Label>Phone</Label><Input value={form.phone} placeholder="07XXXXXXXX" onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
-                <div className="col-span-2"><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-                <div className="col-span-2"><Label>Address</Label><Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
-                <div><Label>Contact Person</Label><Input value={form.contactPerson} onChange={(e) => setForm({ ...form, contactPerson: e.target.value })} /></div>
-                <div><Label>KRA PIN (optional)</Label><Input value={form.kraPin} onChange={(e) => setForm({ ...form, kraPin: e.target.value })} /></div>
-                <div className="col-span-2"><Label>Credit Limit Request (KES)</Label><Input type="number" value={form.creditLimit} onChange={(e) => setForm({ ...form, creditLimit: Number(e.target.value) || 0 })} /></div>
-                <div className="col-span-2"><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-                <Button onClick={submit}>Create</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+                  <Button onClick={submit}>Create</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         }
       />
       <DataTable columns={cols} rows={customers} />
+
+      <Dialog open={!!edit} onOpenChange={(o) => !o && setEdit(null)}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader><DialogTitle>Edit {edit?.name}</DialogTitle></DialogHeader>
+          {edit && (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2"><Label>Name</Label><Input value={edit.name} onChange={(e) => setEdit({ ...edit, name: e.target.value })} /></div>
+              <div><Label>Phone</Label><Input value={edit.phone} onChange={(e) => setEdit({ ...edit, phone: e.target.value })} /></div>
+              <div><Label>Email</Label><Input value={edit.email} onChange={(e) => setEdit({ ...edit, email: e.target.value })} /></div>
+              <div className="col-span-2"><Label>Address</Label><Input value={edit.address} onChange={(e) => setEdit({ ...edit, address: e.target.value })} /></div>
+              <div><Label>Contact Person</Label><Input value={edit.contactPerson} onChange={(e) => setEdit({ ...edit, contactPerson: e.target.value })} /></div>
+              <div><Label>Credit Limit</Label><Input type="number" value={edit.creditLimit} onChange={(e) => setEdit({ ...edit, creditLimit: Number(e.target.value) || 0 })} /></div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEdit(null)}>Cancel</Button>
+            <Button onClick={saveEdit}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!view} onOpenChange={(o) => !o && setView(null)}>
         <DialogContent className="max-w-3xl">

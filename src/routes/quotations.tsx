@@ -12,9 +12,11 @@ import { DataTable, type Column } from "@/components/DataTable";
 import { useStore } from "@/lib/store";
 import { formatKES, formatDate } from "@/lib/format";
 import { StatusBadge } from "@/components/StatusBadge";
-import { Plus, Send, Mail, MessageSquare, ArrowRightCircle, Trash2 } from "lucide-react";
+import { Plus, Send, ArrowRightCircle, Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import type { Quotation, LineItem } from "@/lib/types";
+import { BulkIO } from "@/components/BulkIO";
+import { DocActions } from "@/components/DocActions";
 
 export const Route = createFileRoute("/quotations")({
   component: Quotations,
@@ -22,7 +24,7 @@ export const Route = createFileRoute("/quotations")({
 });
 
 function Quotations() {
-  const { quotations, customers, products, addQuotation, updateQuotationStatus, convertQuotationToInvoice } = useStore();
+  const { quotations, customers, products, addQuotation, updateQuotationStatus, convertQuotationToInvoice, deleteQuotation } = useStore();
   const [open, setOpen] = useState(false);
   const [customerId, setCustomerId] = useState("");
   const [validity, setValidity] = useState(14);
@@ -56,27 +58,31 @@ function Quotations() {
     { key: "valid", header: "Valid Until", cell: (q) => formatDate(q.validUntil) },
     { key: "status", header: "Status", cell: (q) => <StatusBadge status={q.status} /> },
     {
-      key: "act", header: "", cell: (q) => (
-        <div className="flex gap-1 justify-end">
-          {q.status === "Draft" && (
-            <Button size="sm" variant="outline" onClick={() => { updateQuotationStatus(q.id, "Sent"); toast.success("Quotation sent"); }}>
-              <Send className="h-3 w-3 mr-1" /> Send
-            </Button>
-          )}
-          {q.status === "Sent" && (
-            <Button size="sm" variant="outline" onClick={() => { updateQuotationStatus(q.id, "Accepted"); toast.success("Marked accepted"); }}>
-              Accept
-            </Button>
-          )}
-          {q.status === "Accepted" && (
-            <Button size="sm" onClick={() => { const inv = convertQuotationToInvoice(q.id); if (inv) toast.success(`Converted to ${inv.id}`); }}>
-              <ArrowRightCircle className="h-3 w-3 mr-1" /> Convert
-            </Button>
-          )}
-          <Button size="sm" variant="ghost" onClick={() => toast.success("Email sent (demo)")}><Mail className="h-3 w-3" /></Button>
-          <Button size="sm" variant="ghost" onClick={() => toast.success("SMS sent (demo)")}><MessageSquare className="h-3 w-3" /></Button>
-        </div>
-      ),
+      key: "act", header: "", cell: (q) => {
+        const html = `<h1>Quotation ${q.id}</h1><div class="meta">${q.customerName} · Valid until ${formatDate(q.validUntil)}</div>
+          <table><thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>
+          ${q.items.map((i) => `<tr><td>${i.name}</td><td>${i.quantity}</td><td>${formatKES(i.price)}</td><td>${formatKES(i.price * i.quantity)}</td></tr>`).join("")}
+          </tbody></table><div class="total">Total: ${formatKES(q.total)}</div>`;
+        return (
+          <div className="flex gap-1 justify-end flex-wrap">
+            {q.status === "Draft" && (
+              <Button size="sm" variant="outline" onClick={() => { updateQuotationStatus(q.id, "Sent"); toast.success("Quotation sent"); }}>
+                <Send className="h-3 w-3 mr-1" /> Send
+              </Button>
+            )}
+            {q.status === "Sent" && (
+              <Button size="sm" variant="outline" onClick={() => { updateQuotationStatus(q.id, "Accepted"); toast.success("Marked accepted"); }}>Accept</Button>
+            )}
+            {q.status === "Accepted" && (
+              <Button size="sm" onClick={() => { const inv = convertQuotationToInvoice(q.id); if (inv) toast.success(`Converted to ${inv.id}`); }}>
+                <ArrowRightCircle className="h-3 w-3 mr-1" /> Convert
+              </Button>
+            )}
+            <DocActions title={q.id} html={html} emailTo={q.customerName} />
+            <Button size="sm" variant="outline" className="text-destructive" onClick={() => { if (confirm(`Delete ${q.id}?`)) { deleteQuotation(q.id); toast.success("Deleted"); } }}><Trash2 className="h-3 w-3" /></Button>
+          </div>
+        );
+      },
       className: "text-right",
     },
   ];
@@ -87,10 +93,12 @@ function Quotations() {
         title="Quotations"
         description="Manage customer quotations and convert to invoices."
         actions={
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button><Plus className="h-4 w-4 mr-1" /> New Quotation</Button>
-            </DialogTrigger>
+          <div className="flex gap-2">
+            <BulkIO entity="quotations" rows={quotations as unknown as Record<string, unknown>[]} />
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button><Plus className="h-4 w-4 mr-1" /> New Quotation</Button>
+              </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader><DialogTitle>Create Quotation</DialogTitle></DialogHeader>
               <div className="space-y-4">
